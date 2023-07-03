@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setGoogleUser } from '../redux/reducers/googleUser';
 import MainMenu from '../components/mainMenu/MainMenu';
 import ReadEmailView from '../components/mainMenu/emails/ReadEmailView';
+import MainChatView from '../components/chatMenu/MainChatView';
 
 function MainPage() {
   const { profile, isLogin } = useSelector((state) => state.googleAuth);
@@ -39,7 +40,8 @@ function MainPage() {
   return (
     <div className="main-page-container">
       <MainMenu />
-      <ReadEmailView />
+      {/* <ReadEmailView /> */}
+      <MainChatView />
     </div>
   );
 }

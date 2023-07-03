@@ -6,16 +6,6 @@ const simpleParser = require('mailparser').simpleParser;
 const User = mongoose.model('Users', UserShema);
 const FindUser = mongoose.model('Users');
 
-// const emailClient = {
-//   host: null,
-//   port: null,
-//   secure: true,
-//   auth: {
-//     user: null,
-//     pass: null,
-//   },
-// };
-
 export const imapRoute = (app) => {
   app.route('/api/imap/login').post(async (req, res) => {
     const { host, port, email, password } = req.body;
@@ -60,9 +50,8 @@ export const imapRoute = (app) => {
         res.json({ email: email, name: email });
       } else {
         req.session.user = {
-          id: userExist._id,
-          name: userExist.name,
-          email: userExist.email,
+          name: email,
+          email: email,
           host: host,
           port: port,
           tls: true,

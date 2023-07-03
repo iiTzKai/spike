@@ -1,4 +1,4 @@
-import { SlEnvolope, SlBubble, SlBubbles } from 'react-icons/sl';
+import { SlEnvolope, SlBubble, SlBubbles, SlCamrecorder } from 'react-icons/sl';
 
 function MenuIcons() {
   return (
@@ -12,6 +12,9 @@ function MenuIcons() {
         </li>
         <li>
           <SlBubbles />
+        </li>
+        <li>
+          <SlCamrecorder />
         </li>
       </ul>
     </div>
