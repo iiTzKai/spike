@@ -57,4 +57,64 @@ export const chatRoute = (app) => {
       res.status(500).send('Error no user found with that email');
     }
   });
+
+  app.post('/chat-room-group', async (req, res) => {
+    const { members } = req.body;
+    const checkmembers = [];
+    const checkedmembersid = [];
+
+    await Promise.all(
+      members.map(async (member) => {
+        try {
+          const response = await UserCollection.findOne({ email: member });
+          checkmembers.push(response);
+          checkedmembersid.push(response.id);
+        } catch (error) {
+          console.log(
+            '🚀 ~ file: chatRoute.js:85 ~ members.map ~ error:',
+            error,
+          );
+        }
+      }),
+    );
+
+    const group_chat = new chatRoom({
+      name: 'Group Chat',
+      users: checkedmembersid,
+    });
+
+    const chatroom_exist = await ChatRoomCollection.find({
+      users: { $all: checkedmembersid },
+    });
+
+    if (chatroom_exist.length > 0) {
+      res.json('Chat Room already exist with all of this members');
+    } else {
+      group_chat
+        .save()
+        .then(async (chat_room) => {
+          for (const user of checkedmembersid) {
+            try {
+              await UserCollection.updateOne(
+                { _id: user },
+                { $push: { groups: chat_room.id } },
+              );
+            } catch (error) {
+              console.log(
+                '🚀 ~ file: chatRoute.js:113 ~ .then ~ error:',
+                error,
+              );
+            }
+          }
+
+          res.json(chat_room);
+        })
+        .catch((error) => {
+          console.log(
+            '🚀 ~ file: chatRoute.js:108 ~ group_chat.save ~ error:',
+            error,
+          );
+        });
+    }
+  });
 };
