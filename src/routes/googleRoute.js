@@ -49,7 +49,6 @@ export const googleRoute = (app) => {
 
       res.send(userInfo.data);
     } catch (error) {
-      console.log('🚀 ~ file: googleRoute.js:41 ~ app.get ~ error:', error);
       res.status(500).send('Error retrieving user information');
     }
   });
@@ -61,6 +60,7 @@ export const googleRoute = (app) => {
       const gmail = google.gmail({ version: 'v1', auth: oAuthClient });
       const response = await gmail.users.messages.list({
         userId: 'me',
+        maxResults: 15,
       });
 
       const emails = response.data.messages;
@@ -77,10 +77,12 @@ export const googleRoute = (app) => {
         ).value;
         const sender = headers.find((header) => header.name === 'From').value;
         const date = headers.find((header) => header.name === 'Date').value;
+        const emailRegex = /<([^>]+)>/;
+        const matches = sender.match(emailRegex);
 
         emailContent.push({
           subject: subject,
-          sender: sender,
+          sender: matches ? matches[1] : null,
           date: date,
           content: null,
           uid: message.data.id,

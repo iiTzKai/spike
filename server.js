@@ -9,6 +9,7 @@ import { googleRoute } from './src/routes/googleRoute';
 import { imapRoute } from './src/routes/imapRoute';
 import { mongodbRoute } from './src/routes/mongodbRoute';
 import { chatRoute } from './src/routes/chatRoute';
+import { RTCwebSocket } from './src/websocket/websocket';
 
 // const mongodbUri = `mongodb+srv://admin:${process.env.MONGODB_PASS}@spike.icywfkd.mongodb.net/?retryWrites=true&w=majority`;
 const mongodbUri = 'mongodb://localhost:27017/Spike';
@@ -53,15 +54,7 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'src/client/build/index.html'));
 });
 
-io.on('connection', (socket) => {
-  console.log(`user login in ${socket.id}`);
-
-  socket.on('fetch_history', async (data) => {});
-
-  socket.on('disconnect', () => {
-    console.log(`User ${socket.id} disconnected`);
-  });
-});
+RTCwebSocket(io);
 
 http.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

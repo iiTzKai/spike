@@ -10,7 +10,7 @@ export const ChatRoomSchema = new Schema({
   users: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      required: true,
     },
   ],
+  emails: [{ type: String, required: true }],
 });

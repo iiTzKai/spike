@@ -62,6 +62,7 @@ export const chatRoute = (app) => {
     const { members } = req.body;
     const checkmembers = [];
     const checkedmembersid = [];
+    const emails = [];
 
     await Promise.all(
       members.map(async (member) => {
@@ -69,6 +70,7 @@ export const chatRoute = (app) => {
           const response = await UserCollection.findOne({ email: member });
           checkmembers.push(response);
           checkedmembersid.push(response.id);
+          emails.push(response.email);
         } catch (error) {
           console.log(
             '🚀 ~ file: chatRoute.js:85 ~ members.map ~ error:',
@@ -81,6 +83,7 @@ export const chatRoute = (app) => {
     const group_chat = new chatRoom({
       name: 'Group Chat',
       users: checkedmembersid,
+      emails: emails,
     });
 
     const chatroom_exist = await ChatRoomCollection.find({

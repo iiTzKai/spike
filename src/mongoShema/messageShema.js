@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 export const MessageSchema = new Schema({
   sender: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Users',
+    ref: 'User',
     required: true,
   },
   message: {
@@ -18,6 +18,7 @@ export const MessageSchema = new Schema({
   },
   ToGroup: {
     type: mongoose.Schema.Types.ObjectId,
+    ref: 'ChatRoom',
     required: true,
   },
 });
