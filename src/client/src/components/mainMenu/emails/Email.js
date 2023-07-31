@@ -10,8 +10,6 @@ function Email({ email, showAll }) {
     <div className="card" onClick={handleReadEmail}>
       <p className="card-title">{email.subject}</p>
       <p className="card-body">
-        {/* {email.content ? email.content.slice(0, 50) : null}
-        ... */}
         {showAll
           ? email
             ? email.content

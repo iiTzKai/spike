@@ -9,6 +9,7 @@ import MainChatView from '../components/chatMenu/MainChatView';
 
 function MainPage() {
   const { profile, isLogin } = useSelector((state) => state.googleAuth);
+  const { currentView } = useSelector((state) => state.navigation);
   const { userInfo } = useSelector((state) => state.imapAuth);
   const dispatch = useDispatch();
 
@@ -40,8 +41,8 @@ function MainPage() {
   return (
     <div className="main-page-container">
       <MainMenu />
-      {/* <ReadEmailView /> */}
-      <MainChatView />
+      {currentView === 'readEmail' && <ReadEmailView />}
+      {currentView === 'chat' && <MainChatView />}
     </div>
   );
 }
