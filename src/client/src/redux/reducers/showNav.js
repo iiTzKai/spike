@@ -12,8 +12,11 @@ const navComponent = createSlice({
     ShowChat: (state) => {
       state.currentView = 'chat';
     },
+    ShowVideoCall: (state) => {
+      state.currentView = 'videocall';
+    },
   },
 });
 
-export const { ReadEmails, ShowChat } = navComponent.actions;
+export const { ReadEmails, ShowChat, ShowVideoCall } = navComponent.actions;
 export default navComponent.reducer;

@@ -1,10 +1,12 @@
-import { useEffect, useState } from 'react';
-import { SlCursor } from 'react-icons/sl';
+import { useEffect, useRef, useState } from 'react';
+import { SlCamrecorder, SlCursor } from 'react-icons/sl';
 import io from 'socket.io-client';
 import './MainChatView.css';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Email from '../mainMenu/emails/Email';
 import { socket } from '../mainMenu/MenuChat';
+import { ShowVideoCall } from '../../redux/reducers/showNav';
+import { setRoomId } from '../../redux/reducers/videoCall';
 
 // const socket = io('http://localhost:5000');
 
@@ -16,12 +18,17 @@ function MainChatView() {
   const [history, setHistory] = useState(null);
   const [sender, setSender] = useState(null);
   const [currentRoom, setCurrentRoom] = useState('');
+  const [myId, setMyId] = useState('');
+  const messageListRef = useRef(null);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (userInfo) {
       setSender(userInfo.email);
+      socket.emit('get-myid', { email: userInfo.email });
     } else {
       setSender(profile.emailAddresses[0].value);
+      socket.emit('get-myid', { email: profile.emailAddresses[0].value });
     }
   }, []);
 
@@ -38,6 +45,10 @@ function MainChatView() {
       setHistory((prevMessages) => [...prevMessages, message]);
     });
 
+    socket.on('get-myid', (data) => {
+      setMyId(data.userid);
+    });
+
     return () => {
       socket.off('message');
     };
@@ -45,7 +56,22 @@ function MainChatView() {
 
   useEffect(() => {
     console.log(history, 'HEREEEEE');
-  }, [history]);
+    if (userInfo) {
+      socket.emit('get-myid', { email: userInfo.email });
+    } else {
+      socket.emit('get-myid', { email: profile.emailAddresses[0].value });
+    }
+
+    if (currentRoom) {
+      dispatch(setRoomId(currentRoom));
+    }
+  }, [history, currentRoom]);
+
+  useEffect(() => {
+    if (messageListRef.current) {
+      messageListRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
 
   const handleSendMessage = () => {
     if (message) {
@@ -72,11 +98,25 @@ function MainChatView() {
     }
   };
 
+  const handleVideoCall = () => {
+    socket.emit('message', {
+      roomID: currentRoom,
+      sender: sender,
+      message: `Call started ${Date.now()}`,
+    });
+    dispatch(ShowVideoCall());
+  };
+
   return (
     <div className="chat-container">
       <div className="chat-card">
         <div className="chat-header">
           Chat: {currentRoom ? currentRoom : null}
+          {currentRoom ? (
+            <div className="video-call-container" onClick={handleVideoCall}>
+              <SlCamrecorder />
+            </div>
+          ) : null}
         </div>
         <div className="chat-window">
           <ul className="message-list">
@@ -86,10 +126,23 @@ function MainChatView() {
               </li>
             ) : null}
             {history
-              ? history.map((historyMessage, index) => (
-                  <li key={index}>{historyMessage.message}</li>
-                ))
+              ? history.map((historyMessage, index) => {
+                  if (historyMessage.sender === myId) {
+                    return (
+                      <li key={index} className="sender-message">
+                        {historyMessage.message}
+                      </li>
+                    );
+                  } else {
+                    return (
+                      <li key={index} className="not-sender-message">
+                        {historyMessage.message}
+                      </li>
+                    );
+                  }
+                })
               : null}
+            <div ref={messageListRef}></div>
           </ul>
         </div>
         <div className="chat-input">

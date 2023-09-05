@@ -1,0 +1,42 @@
+.persons-video {
+    --input-focus: #2d8cf0;
+    --font-color: #323232;
+    --font-color-sub: #666;
+    --bg-color: #fff;
+    --main-color: #323232;
+    padding: 20px;
+    background: lightgrey;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 20px;
+    border-radius: 5px;
+    border: 2px solid var(--main-color);
+    box-shadow: 4px 4px var(--main-color);
+    margin-right: 20px    ;
+  }
+
+  .persons-container {
+    width: 100%;
+    display: flex;
+  }
+
+.video-call-container-component {
+  display: flex;
+  position: relative;
+  width: 100%;
+}    
+
+.end-call {
+  position: absolute;
+  bottom: 20px;
+  width: 50px;
+  right: 50%;
+  font-size: 20px;
+  border-radius: 10px;
+  border: 1px solid black;
+  padding: 5px;
+  cursor: pointer;
+  background-color: red;
+  color: white;
+}

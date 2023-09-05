@@ -1,6 +1,10 @@
 import { SlEnvolope, SlBubble, SlBubbles, SlCamrecorder } from 'react-icons/sl';
 import { useDispatch, useSelector } from 'react-redux';
-import { ReadEmails, ShowChat } from '../../redux/reducers/showNav';
+import {
+  ReadEmails,
+  ShowChat,
+  ShowVideoCall,
+} from '../../redux/reducers/showNav';
 
 function MenuIcons() {
   const dispatch = useDispatch();
@@ -9,6 +13,9 @@ function MenuIcons() {
   };
   const handleChat = () => {
     dispatch(ShowChat());
+  };
+  const handleVideoCall = () => {
+    dispatch(ShowVideoCall());
   };
 
   return (
@@ -20,7 +27,7 @@ function MenuIcons() {
         <li onClick={handleChat}>
           <SlBubble />
         </li>
-        <li>
+        <li onClick={handleVideoCall}>
           <SlBubbles />
         </li>
         <li>

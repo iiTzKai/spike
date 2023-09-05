@@ -15,6 +15,18 @@
     font-size: 18px;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .video-call-container {
+    padding: 10px;
+    border-radius: 100%;
+    background-color: blue;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
   }
   
   .chat-window {
@@ -28,13 +40,14 @@
     margin: 0;
     padding: 0;
     overflow-y: auto;
+    position: relative;
   }
   
   .chat-input {
     display: flex;
     align-items: center;
     padding: 10px;
-    border-top: 1px solid #ccc;
+    border: 1px solid #ccc;
     position: absolute;
     bottom: -55px;
     width: 97%;
@@ -76,4 +89,13 @@
     align-items: center;
 }
 
+.message-list li {
+  padding: 3px;
+}
 
+.sender-message {
+  color: blue;
+  height: 20px;
+  text-align: right;
+  
+}

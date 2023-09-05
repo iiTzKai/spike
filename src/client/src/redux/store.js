@@ -6,6 +6,7 @@ import googleUser from './reducers/googleUser';
 import imapUser from './reducers/imapUser';
 import emailsHolder from './reducers/emails';
 import showNav from './reducers/showNav';
+import videoCall from './reducers/videoCall';
 
 const persistConfig = {
   key: 'root',
@@ -17,6 +18,7 @@ const rootReducer = combineReducers({
   imapAuth: imapUser,
   emailHolder: emailsHolder,
   navigation: showNav,
+  videoCall: videoCall,
 });
 
 const persisteReducer = persistReducer(persistConfig, rootReducer);

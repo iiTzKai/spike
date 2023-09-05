@@ -9,6 +9,10 @@ const ChatRoomCollection = mongoose.model('ChatRoom');
 const UserCollection = mongoose.model('Users');
 const MessageCollection = mongoose.model('Messages');
 
+const users = {};
+
+const socketToRoom = {};
+
 export const RTCwebSocket = (io) => {
   io.on('connection', (socket) => {
     console.log(`user login in ${socket.id}`);
@@ -71,10 +75,6 @@ export const RTCwebSocket = (io) => {
       const { roomID, sender, message } = data;
 
       await UserCollection.find({ email: sender }).then(async (emailInfo) => {
-        console.log(
-          '🚀 ~ file: websocket.js:74 ~ awaitUserCollection.find ~ emailInfo:',
-          emailInfo[0].id,
-        );
         try {
           const newMessage = new messageSchema({
             sender: emailInfo[0].id,
@@ -137,12 +137,107 @@ export const RTCwebSocket = (io) => {
       console.log(`Room joined ${data.room}`);
     });
 
+    socket.on('join-room-email', async (data) => {
+      await ChatRoomCollection.find({
+        emails: { $all: [data.myEmail, data.receiverEmail] },
+      }).then((room) => {
+        io.to(data.room).emit('current_room', room[0].id);
+        socket.emit('current_room', room[0].id);
+        console.log(`Room joined ${data.room}`);
+      });
+    });
+
     socket.on('fetch-chatrooms', async (data) => {
       const chatrooms = await ChatRoomCollection.find({
         emails: { $in: data.email },
       });
       socket.join(data.email);
       io.to(data.email).emit('fetch-chatrooms', chatrooms);
+    });
+
+    socket.on('get-myid', async (data) => {
+      try {
+        await UserCollection.find({ email: data.email }).then((user) => {
+          socket.emit('get-myid', { userid: user[0].id });
+        });
+      } catch (error) {
+        console.log('🚀 ~ file: websocket.js:152 ~ socket.on ~ error:', error);
+      }
+    });
+
+    //webrtc not used
+
+    socket.on('offer', (data) => {
+      socket.to(data.room).emit('offer', data.signalData);
+    });
+
+    socket.on('answer', (data) => {
+      socket.to(data.room).emit('answer', data.signalData);
+    });
+
+    socket.on('ice-candidate', (data) => {
+      socket.to(data.room).emit('ice-candidate', data.candidate);
+    });
+
+    socket.on('socket-me', (socket) => {
+      socket.emit('socket-me', socket.id);
+    });
+
+    socket.on('callUser', (data) => {
+      console.log('user called');
+      socket.to(data.userToCall).emit('callUser', {
+        signal: data.signalData,
+        from: data.from,
+        name: data.name,
+      });
+    });
+
+    socket.on('join-call', (room) => {
+      socket.join(room.room);
+      console.log('User joined room:', room.room);
+    });
+
+    socket.on('answerCall', (data) => {
+      socket.to(data.to).emit('callAccepted', data.signal);
+    });
+
+    // another Video Call test
+
+    socket.on('join room', (roomID) => {
+      console.log('🚀 ~ file: websocket.js:207 ~ socket.on ~ roomID:', roomID);
+      if (users[roomID]) {
+        users[roomID].push(socket.id);
+      } else {
+        users[roomID] = [socket.id];
+      }
+      socketToRoom[socket.id] = roomID;
+      const usersInThisRoom = users[roomID].filter((id) => id !== socket.id);
+
+      socket.emit('all users', usersInThisRoom);
+    });
+
+    socket.on('leave room', (roomID) => {
+      const usersInThisRoom = users[roomID].filter((id) => id !== socket.id);
+      users[roomID] = usersInThisRoom;
+      socket.emit('all users', usersInThisRoom);
+      console.log(
+        '🚀 ~ file: websocket.js:223 ~ socket.on ~ usersInThisRoom:',
+        usersInThisRoom,
+      );
+    });
+
+    socket.on('sending signal', (payload) => {
+      io.to(payload.userToSignal).emit('user joined', {
+        signal: payload.signal,
+        callerID: payload.callerID,
+      });
+    });
+
+    socket.on('returning signal', (payload) => {
+      io.to(payload.callerID).emit('receiving returned signal', {
+        signal: payload.signal,
+        id: socket.id,
+      });
     });
 
     socket.on('disconnect', () => {
