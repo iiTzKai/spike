@@ -1,13 +1,15 @@
-import express, { json } from 'express';
-import 'dotenv/config';
-import path from 'path';
-import { googleRoute } from './src/routes/googleRoute';
-import { mongodbRoute } from './src/routes/mongodbRoute';
 import bodyParser from 'body-parser';
-import mongoose from 'mongoose';
+import 'dotenv/config';
+import express, { json } from 'express';
 import session from 'express-session';
-import { imapRoute } from './src/routes/imapRoute';
+import mongoose from 'mongoose';
+import path from 'path';
 import socketIO from 'socket.io';
+import { googleRoute } from './src/routes/googleRoute';
+import { imapRoute } from './src/routes/imapRoute';
+import { mongodbRoute } from './src/routes/mongodbRoute';
+import { chatRoute } from './src/routes/chatRoute';
+import { RTCwebSocket } from './src/websocket/websocket';
 
 // const mongodbUri = `mongodb+srv://admin:${process.env.MONGODB_PASS}@spike.icywfkd.mongodb.net/?retryWrites=true&w=majority`;
 const mongodbUri = 'mongodb://localhost:27017/Spike';
@@ -42,6 +44,7 @@ app.use(
 googleRoute(app);
 mongodbRoute(app);
 imapRoute(app);
+chatRoute(app);
 
 app.use((req, res) => {
   res.status(404).json({ error: 'not found' });
@@ -50,6 +53,8 @@ app.use((req, res) => {
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'src/client/build/index.html'));
 });
+
+RTCwebSocket(io);
 
 http.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

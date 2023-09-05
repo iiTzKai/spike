@@ -5,9 +5,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setGoogleUser } from '../redux/reducers/googleUser';
 import MainMenu from '../components/mainMenu/MainMenu';
 import ReadEmailView from '../components/mainMenu/emails/ReadEmailView';
+import MainChatView from '../components/chatMenu/MainChatView';
+import CallVideo from '../components/callvideo/CallVideo';
+import VideoCall from '../components/callvideo/VideoCall';
 
 function MainPage() {
   const { profile, isLogin } = useSelector((state) => state.googleAuth);
+  const { currentView } = useSelector((state) => state.navigation);
+  const { videoCallRoom } = useSelector((state) => state.videoCall);
   const { userInfo } = useSelector((state) => state.imapAuth);
   const dispatch = useDispatch();
 
@@ -39,7 +44,12 @@ function MainPage() {
   return (
     <div className="main-page-container">
       <MainMenu />
-      <ReadEmailView />
+      {currentView === 'readEmail' && <ReadEmailView />}
+      {currentView === 'chat' && <MainChatView />}
+      {/* {currentView === 'videocall' && <CallVideo />} */}
+      {currentView === 'videocall' && videoCallRoom !== null && (
+        <VideoCall roomID={videoCallRoom} />
+      )}
     </div>
   );
 }

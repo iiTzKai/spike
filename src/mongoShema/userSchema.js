@@ -5,11 +5,14 @@ const Schema = mongoose.Schema;
 export const UserShema = new Schema({
   name: {
     type: String,
-    required: 'Please Enter a name',
+    required: true,
   },
   email: {
     type: String,
-    required: 'Please Enter an Email',
+    required: true,
+  },
+  groups: {
+    type: mongoose.Schema.Types.ObjectId,
   },
   created_date: {
     type: String,

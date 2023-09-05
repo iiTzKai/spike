@@ -5,12 +5,20 @@ function ReadEmailView() {
 
   return (
     <div className="email-view-container">
-      <div class="email-paper">
-        <p>Subject: {emailread ? emailread.subject : null}</p>
-        <p>From: {emailread ? emailread.sender : null}</p>
-        <p>{emailread ? emailread.content : null}</p>
+      <div className="card">
+        <span className="card__title">
+          {emailread ? emailread.subject : null}
+        </span>
+        <p className="card__text">{emailread ? emailread.content : null}</p>
       </div>
     </div>
+    // <div className="email-view-container">
+    //   <div class="email-paper">
+    //     <p>Subject: {emailread ? emailread.subject : null}</p>
+    //     <p>From: {emailread ? emailre    ad.sender : null}</p>
+    //     <p>{emailread ? emailread.content : null}</p>
+    //   </div>
+    // </div>
   );
 }
 
