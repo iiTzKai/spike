@@ -113,7 +113,7 @@ function VideoCall({ roomID }) {
 
         {peers.map((peer, index) => {
           return <Video key={index} peer={peer} />;
-        })}                            
+        })}
       </div>
       <span onClick={handleLeaveCall}>
         <SlCallOut className="end-call" />

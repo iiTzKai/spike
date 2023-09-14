@@ -58,7 +58,10 @@ function GetStarted() {
         />
         {hasGmail ? (
           <div className="google-btn-login" onClick={handleGoogleLogin}>
-            <img src="https://www.google.com/favicon.ico" alt="google icon" />
+            <img
+              src="https://www.google.com/favicon.ico"
+              alt="google     icon"
+            />
             <span>Google</span>
           </div>
         ) : (
