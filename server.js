@@ -50,7 +50,7 @@ app.use((req, res) => {
   res.status(404).json({ error: 'not found' });
 });
 
-app.get('/', (req, res) => {
+app.get('/    ', (req, res) => {
   res.sendFile(path.join(__dirname, 'src/client/build/index.html'));
 });
 

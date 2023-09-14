@@ -28,9 +28,6 @@ function MenuIcons() {
           <SlBubble />
         </li>
         <li onClick={handleVideoCall}>
-          <SlBubbles />
-        </li>
-        <li>
           <SlCamrecorder />
         </li>
       </ul>
